@@ -25,7 +25,7 @@ const char LATIN_CHARACTERS[] = {
     '.', '?', '@', ',', ':',
     '`', '-', '/', '(', ')',
     '"', '=', '+', ';', '_',
-    ' '
+    '!', '$', '^', ' '
 };
 
 const char * const MORSE_CHARACTERS[] = {
@@ -42,12 +42,14 @@ const char * const MORSE_CHARACTERS[] = {
     ".-.-.-", "..--..", ".--.-.", "--..--",
     "---...", ".----.", "-....-", "-..-.",
     "-.--.", "-.--.-", ".-..-.", "-...-",
-    ".-.-.", "-.-.-.", "..--.-", " "
+    ".-.-.", "-.-.-.", "..--.-", "-.-.--",
+    "...-..-", "-.-.-", " "
+    
 };
 
 void resetAll();
 void decodeMorse();
-void parseMorse();
+void readMorse();
 
 void setup();
 void loop();

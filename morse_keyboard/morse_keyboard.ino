@@ -27,6 +27,7 @@ const int morsePin = 7;
 
 boolean keyDown = false;
 boolean paused = false;
+boolean shift = false;
 
 unsigned long time = 0;
 
@@ -34,7 +35,7 @@ void resetAll()
 {
 
     paused = true;
-    Serial.println("reset");
+    Serial.println("All Reset..");
 
     // play earcon
     delay(200);
@@ -84,7 +85,7 @@ void decodeMorse()
     paused = false;
 }
 
-void parseMorse()
+void readMorse()
 {
     if (digitalRead(morsePin) == HIGH){    // the morse key is UP
         if (keyDown) {    // the key was DOWN before
@@ -108,6 +109,10 @@ void parseMorse()
                 //DAH=(DAH+duration)/2;
                 //DIT=DAH/3;
                 Serial.print("-");
+                if (morseCode == "--------"){
+                    Serial.print(shift);
+                    shift = !shift;
+                }
             }
 
             time = millis();
@@ -170,5 +175,5 @@ void loop()
     if (paused)
         return;
 
-    parseMorse();
+    readMorse();
 }
