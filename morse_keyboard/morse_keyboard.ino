@@ -27,7 +27,7 @@ const int morsePin = 7;
 
 boolean keyDown = false;
 boolean paused = false;
-boolean shift = false;
+boolean capslock = false;
 
 unsigned long time = 0;
 
@@ -67,8 +67,19 @@ void decodeMorse()
     bool decoded = false;
     for (int i = 0; i < sizeof(LATIN_CHARACTERS); i++) {
         if (morseCode == MORSE_CHARACTERS[i]) {
-            Serial.print(LATIN_CHARACTERS[i]);
-            message += LATIN_CHARACTERS[i];
+            Serial.print("CAP= ");
+            Serial.println(capslock);
+            if (capslock == true && i < 26)
+            {
+                char tempCharacter = LATIN_CHARACTERS[i] - ('a' - 'A');
+                Serial.print(tempCharacter);
+                message += tempCharacter;
+            }
+            else 
+            {            
+                Serial.print(LATIN_CHARACTERS[i]);
+                message += LATIN_CHARACTERS[i];
+            }
             decoded = true;
             tone(buzzPin, 800, 50);
         }
@@ -109,9 +120,9 @@ void readMorse()
                 //DAH=(DAH+duration)/2;
                 //DIT=DAH/3;
                 Serial.print("-");
-                if (morseCode == "--------"){
-                    Serial.print(shift);
-                    shift = !shift;
+                if (morseCode == "----"){
+                    capslock = !capslock;
+                    Serial.print(capslock);
                 }
             }
 
@@ -177,3 +188,5 @@ void loop()
 
     readMorse();
 }
+
+
