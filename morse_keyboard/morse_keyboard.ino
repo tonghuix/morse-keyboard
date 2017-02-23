@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2017 Tong Hui
+  Copyright (c) 2017 Tong Hui <tonghuix@member.fsf.org>
   
   Based on TworseKey http://modin.yuri.at/tworsekey/
 
@@ -89,7 +89,7 @@ void decodeMorse()
     }
 
     if (!decoded) 
-        tone(buzzPin, 500, 100);
+        tone(buzzPin, 1500, 100);
     
     morseCode = "";
     Serial.println("\n\r" + message);
