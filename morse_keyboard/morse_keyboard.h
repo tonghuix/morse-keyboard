@@ -73,7 +73,7 @@ const char * const MORSE_CHARACTERS[] = {
 };
 
 void resetAll();
-void decodeMorse();
+char decodeMorse(String morse);
 void readMorse();
 
 void setup();

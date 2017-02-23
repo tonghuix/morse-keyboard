@@ -60,39 +60,36 @@ void resetAll()
 }
 
 
-void decodeMorse()
+char decodeMorse(String morse)
 {
-    if (morseCode[0] != '-' && morseCode[0] != '.')
-        return;
+    char tempCharacter = NULL;
+    if (morse[0] != '-' && morse[0] != '.')
+        return NULL;
+    
     paused = true;
-
     // find character from table
     bool decoded = false;
     for (int i = 0; i < sizeof(LATIN_CHARACTERS); i++) {
-        if (morseCode == MORSE_CHARACTERS[i]) {
-            if (capslock == true && i < 26)
-            {
-                char tempCharacter = LATIN_CHARACTERS[i] - ('a' - 'A');
-                //Serial.print(tempCharacter);
-                Keyboard.write(tempCharacter);
-                message += tempCharacter;
-            }
-            else 
-            {            
-                //Serial.print(LATIN_CHARACTERS[i]);
-                Keyboard.write(LATIN_CHARACTERS[i]);
-                message += LATIN_CHARACTERS[i];
-            }
+        if (morse == MORSE_CHARACTERS[i]) {
             decoded = true;
-            tone(buzzPin, 800, 50);
+            if (capslock == true && i < 26)
+                tempCharacter = LATIN_CHARACTERS[i] - ('a' - 'A');
+            else 
+                tempCharacter = LATIN_CHARACTERS[i];
         }
     }
 
-    if (!decoded) 
+    if (!decoded) {
         tone(buzzPin, 1500, 100);
-    
-    morseCode = "";
-    Serial.println("\n\r" + message);
+        tempCharacter = '*';
+    }
+
+    Serial.print(tempCharacter);  //debug
+    Keyboard.write(tempCharacter);
+    message += tempCharacter;
+    morse = "";
+
+    Serial.println("\n\r" + message);  //debug
 
     paused = false;
 }
@@ -131,16 +128,18 @@ void readMorse()
             unsigned long duration = millis() - time;    //Duration for UP time
             if ((duration > 60000) && (message != "")) {    // reset after 60 seconds inactivity
                 resetAll();
-            } else if (duration >= (W_SPACE + 150)
-                       && (morseCode != "......")
-                       && (morseCode != ""))
+            } else if (duration >= (W_SPACE + 150) && (morseCode != ""))
             {    // start a new word 
-                decodeMorse();
-                if (message != ""){
+                decodeMorse(morseCode);
+                if (morseCode == "......"){
+                    morseCode = "";
+                    return;
+                } else {
                     message += " ";
                     Keyboard.write(' ');
+                    morseCode = "";
+                    tone(buzzPin, 2000, 50);    // short feedback beep
                 }
-                tone(buzzPin, 2000, 50);    // short feedback beep
             }
         }
     } else {        // the morse key is DOWN
@@ -149,7 +148,8 @@ void readMorse()
             if (duration < 20) {
                 return;
             } else if ((duration > L_SPACE + 50) && (duration < W_SPACE + 100)) {
-                decodeMorse();    // decode last letter
+                decodeMorse(morseCode);    // decode last letter
+                morseCode = "";
             }
  
             keyDown = true;
@@ -159,7 +159,7 @@ void readMorse()
             tone(buzzPin, 440);    // turn BUZZ ON
         } else {    // the key was already DOWN
             unsigned long duration = millis() - time;
-            if (duration > 1000) {
+            if (duration > 1000 && duration < 1500) {
                 Keyboard.write(KEY_RETURN);
                 digitalWrite(ledPin, LOW);    // turn LED  OFF
                 noTone(buzzPin);    // turn BUZZ OFF
