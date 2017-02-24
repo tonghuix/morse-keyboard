@@ -17,7 +17,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#include "Keyboard.h"
 #include "morse_keyboard.h"
 
 const int buzzPin = 5;
